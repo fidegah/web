@@ -1,0 +1,31 @@
+import z from "zod";
+import { MESSAGES } from "~/constants/messages";
+
+export const contactSchema = z.object({
+  name: z
+    .string({ message: MESSAGES.VALIDATION.FIELDS.NAME.REQUIRED })
+    .trim()
+    .min(1, MESSAGES.VALIDATION.FIELDS.NAME.REQUIRED)
+    .max(50, MESSAGES.VALIDATION.FIELDS.NAME.MAX_LENGTH)
+    .regex(
+      /^[\u0600-\u06FF\s]+$/,
+      MESSAGES.VALIDATION.FIELDS.NAME.PERSIAN_ONLY,
+    ),
+
+  email: z
+    .email(MESSAGES.VALIDATION.FIELDS.EMAIL.INVALID)
+    .nonempty(MESSAGES.VALIDATION.FIELDS.EMAIL.REQUIRED)
+    .max(50, MESSAGES.VALIDATION.FIELDS.EMAIL.MAX_LENGTH),
+
+  subject: z
+    .string({ message: MESSAGES.VALIDATION.FIELDS.SUBJECT.REQUIRED })
+    .trim()
+    .min(3, MESSAGES.VALIDATION.FIELDS.SUBJECT.MIN_LENGTH)
+    .max(100, MESSAGES.VALIDATION.FIELDS.SUBJECT.MAX_LENGTH),
+
+  message: z
+    .string({ message: MESSAGES.VALIDATION.FIELDS.MESSAGE.REQUIRED })
+    .trim()
+    .min(10, MESSAGES.VALIDATION.FIELDS.MESSAGE.MIN_LENGTH)
+    .max(1000, MESSAGES.VALIDATION.FIELDS.MESSAGE.MAX_LENGTH),
+});

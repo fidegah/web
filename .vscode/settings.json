@@ -1,0 +1,6 @@
+{
+  "sonarlint.connectedMode.project": {
+    "connectionId": "fidegah",
+    "projectKey": "fidegah_web"
+  }
+}

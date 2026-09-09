@@ -1,0 +1,29 @@
+@reference "../../app.css";
+
+.hljs-keyword {
+  @apply text-pink-400 font-semibold;
+}
+.hljs-string {
+  @apply text-emerald-400;
+}
+.hljs-comment {
+  @apply text-zinc-500 italic;
+}
+.hljs-number {
+  @apply text-amber-400;
+}
+.hljs-title,
+.hljs-section {
+  @apply text-sky-400 font-medium;
+}
+.hljs-built_in {
+  @apply text-purple-400;
+}
+.hljs-attr {
+  @apply text-orange-400;
+}
+
+.tiptap > *:first-child {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
