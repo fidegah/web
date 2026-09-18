@@ -1,4 +1,4 @@
-import { data, replace, useNavigate, useSearchParams } from "react-router";
+import { data, useNavigate, useSearchParams } from "react-router";
 import { ERROR_CODE } from "~/constants/errors";
 import PortalFeedbackLayout from "~/components/website/portal/layouts";
 import type { Route } from "./+types/feedback";
@@ -11,6 +11,7 @@ import {
   getSdkPosts,
 } from "~/services/sdk.service";
 import { apiClientContext } from "~/context";
+import { redirect } from "react-router";
 
 export function meta() {
   const config = SEO_CONFIG.sdk.feedbackWidget;
@@ -27,25 +28,26 @@ export async function loader({ request, params, context }: Route.LoaderArgs) {
   const { boardId } = params;
   const url = new URL(request.url);
 
-  const sessionId = url.searchParams.get("session_id");
+  const sessionId = url.searchParams.get("sessionId");
+  const sdkToken = url.searchParams.get("sdkToken");
   const theme = url.searchParams.get("theme") as "dark" | "light";
 
-  if (!sessionId) {
+  if (!sessionId || !sdkToken) {
     throw data(null, {
       status: 400,
     });
   }
 
   if (!boardId) {
-    const defaultBoard = await getSdkDefaultBoard(api);
+    const defaultBoard = await getSdkDefaultBoard(api, sdkToken);
 
-    return replace(
+    return redirect(
       `/sdk/widget/feedback/board/${defaultBoard.id}${url.search}`,
     );
   }
 
-  const board = await getSdkBoard(api, boardId);
-  const workspace = await getSdkCurrentWorkspace(api);
+  const board = await getSdkBoard(api, sdkToken, boardId);
+  const workspace = await getSdkCurrentWorkspace(api, sdkToken);
 
   if (board.isPrivate) {
     throw data(null, {
@@ -58,8 +60,8 @@ export async function loader({ request, params, context }: Route.LoaderArgs) {
 
   try {
     const [boards, posts] = await Promise.all([
-      getSdkBoards(api),
-      getSdkPosts(api, {
+      getSdkBoards(api, sdkToken),
+      getSdkPosts(api, sdkToken, {
         page: Number(postsPage),
         boardId: boardId,
         search: postsSearch,
@@ -67,7 +69,7 @@ export async function loader({ request, params, context }: Route.LoaderArgs) {
       }),
     ]);
 
-    return { workspace, boards, board, posts, theme };
+    return { sessionId, sdkToken, workspace, boards, board, posts, theme };
   } catch (error) {
     console.error("SDK Widget data fetch failed:", error);
 
@@ -81,11 +83,10 @@ export async function loader({ request, params, context }: Route.LoaderArgs) {
 export default function SdkFeedbackWidget({
   loaderData,
 }: Readonly<Route.MetaArgs>) {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [_, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
-  const sessionId = searchParams.get("session_id");
 
-  const { board, boards, posts, theme } = loaderData;
+  const { sessionId, sdkToken, board, boards, posts, theme } = loaderData;
 
   return (
     <>
@@ -109,6 +110,8 @@ export default function SdkFeedbackWidget({
         board={board}
         posts={posts}
         className="h-screen overflow-y-auto custom-scrollbar"
+        sessionId={sessionId}
+        sdkToken={sdkToken}
         onBoardClick={(newBoardId) => {
           setSearchParams((prev) => {
             prev.set("boardId", String(newBoardId));
@@ -116,7 +119,9 @@ export default function SdkFeedbackWidget({
           });
         }}
         onPostClick={(newPostdId) => {
-          navigate(`post/${newPostdId}?session_id=${sessionId}`);
+          navigate(
+            `post/${newPostdId}?sessionId=${sessionId}&sdkToken=${sdkToken}`,
+          );
         }}
       />
     </>

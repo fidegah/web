@@ -2,7 +2,7 @@ import { motion, useAnimation } from "motion/react";
 import { ChevronUp } from "lucide-react";
 import { CountingNumber } from "~/components/ui/animate-ui/text/counting-number";
 import { cn } from "~/lib/utils";
-import { useFetcher, useSearchParams } from "react-router";
+import { useFetcher } from "react-router";
 import { Spinner } from "~/components/ui/spinner";
 import type { CreateResponse, Post, ToggleVoteResponse } from "~/types";
 import { useEffect, useState } from "react";
@@ -13,6 +13,8 @@ interface UpvoteButtonProps {
   isAuthenticated?: boolean;
   onRequireAuth?: () => void;
   isPortal?: boolean;
+  sessionId?: string;
+  sdkToken?: string;
 }
 
 export const UpvoteButton = ({
@@ -20,14 +22,13 @@ export const UpvoteButton = ({
   isAuthenticated,
   onRequireAuth,
   isPortal = false,
+  sessionId,
+  sdkToken,
 }: Readonly<UpvoteButtonProps>) => {
   const upvoteFetcher = useFetcher<CreateResponse<ToggleVoteResponse>>();
   const iconControls = useAnimation();
-  const [searchParams] = useSearchParams();
 
   useActionAlert(upvoteFetcher.data);
-
-  const sessionId = searchParams.get("session_id");
 
   const [isVoted, setIsVoted] = useState(post.isVoted);
   const [votesCount, setVotesCount] = useState(post.votesCount);
@@ -86,6 +87,7 @@ export const UpvoteButton = ({
       {
         postId: post.id,
         sessionId: sessionId ?? null,
+        sdkToken: sdkToken ?? null,
         isPortal,
       },
       {

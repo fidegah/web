@@ -14,9 +14,7 @@ import PortalPostInfo from "~/components/website/portal/feedback/post/info";
 import PortalOtherPosts from "~/components/website/portal/feedback/post/other-post";
 import { useState } from "react";
 import type {
-  Board,
   PostCategory,
-  Pagination,
   Post,
   PostComment,
   PostVoter,
@@ -35,7 +33,10 @@ interface PortalPostMobileProps {
   postCategory: PostCategory | undefined;
   postComments: Paginated<PostComment[]>;
   postVoters: Paginated<PostVoter[]>;
+  isAuthenticated?: boolean;
   onRequireAuth?: () => void;
+  sessionId?: string;
+  sdkToken?: string;
 }
 
 export default function PortalPostMobile({
@@ -47,7 +48,10 @@ export default function PortalPostMobile({
   postCategory,
   postComments,
   postVoters,
+  isAuthenticated,
   onRequireAuth,
+  sessionId,
+  sdkToken,
 }: Readonly<PortalPostMobileProps>) {
   const [isOpenPostInfoDialog, setIsOpenPostInfoDialog] = useState(false);
   const [isOpenOtherPostDialog, setIsOpenOtherPostDialog] = useState(false);
@@ -61,6 +65,9 @@ export default function PortalPostMobile({
           titleClassName="text-sm"
           onRequireAuth={onRequireAuth}
           isPortal
+          sessionId={sessionId}
+          sdkToken={sdkToken}
+          isAuthenticated={!!user}
           leftSection={
             <div className="flex items-center justify-center">
               <DropdownMenu dir="rtl">
@@ -106,6 +113,7 @@ export default function PortalPostMobile({
           postComments={postComments}
           onRequireAuth={onRequireAuth}
           isPortal
+          sessionId={sessionId}
         />
       </div>
 

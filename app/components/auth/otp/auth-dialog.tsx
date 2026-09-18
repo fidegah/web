@@ -4,11 +4,9 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "~/components/ui/dialog";
-import ErrorMessage from "~/components/ui/error-message";
 import DividerWithText from "~/components/ui/divider-with-text";
 import { useActionAlert } from "~/hooks/use-action-alert";
 import { useOtpAuthDialog } from "~/contexts/otp-auth-dialog-context";
@@ -31,9 +29,12 @@ export default function OtpAuthDialog() {
   const [timer, setTimer] = useState<number>(INITIAL_TIMER_SECONDS);
 
   const fetcher = useFetcher<CreateResponse<{ isNewUser?: boolean }>>();
+  const resendFetcher = useFetcher<CreateResponse>();
   useActionAlert(fetcher.data);
+  useActionAlert(resendFetcher.data);
 
-  const isLoading = fetcher.state !== "idle";
+  const isLoading = fetcher.state !== "idle" || resendFetcher.state !== "idle";
+
   const formRef = useRef<HTMLFormElement>(null);
   const handledDataRef = useRef<unknown>(null);
 
@@ -100,7 +101,7 @@ export default function OtpAuthDialog() {
     setOtpValue("");
     setTimer(INITIAL_TIMER_SECONDS);
 
-    fetcher.submit(
+    resendFetcher.submit(
       { email },
       { method: "POST", action: "/proxy/auth/otp/send" },
     );
@@ -192,10 +193,6 @@ export default function OtpAuthDialog() {
             <ProfileStep fetcher={fetcher} isLoading={isLoading} />
           </Activity>
         </div>
-
-        <DialogFooter className="sm:justify-start">
-          <ErrorMessage data={fetcher.data} />
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

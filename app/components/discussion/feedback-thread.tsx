@@ -25,6 +25,8 @@ interface FeedbackThreadProps {
   onRequireAuth?: () => void;
   className?: string;
   isPortal?: boolean;
+  sessionId?: string;
+  sdkToken?: string;
 }
 
 function updateRootComment(
@@ -54,6 +56,8 @@ export default function FeedbackThread({
   onRequireAuth,
   className,
   isPortal = false,
+  sessionId,
+  sdkToken,
 }: Readonly<FeedbackThreadProps>) {
   const createCommentFetcher = useFetcher();
   const loadMoreFetcher = useFetcher();
@@ -173,6 +177,11 @@ export default function FeedbackThread({
 
     if (isPortal) formData.append("isPortal", String(isPortal));
 
+    if (sessionId && sdkToken) {
+      formData.append("sessionId", sessionId);
+      formData.append("sdkToken", sdkToken);
+    }
+
     if (isEditing && commentActionState?.commentId) {
       formData.append("actionType", "edit");
       formData.append("commentId", commentActionState.commentId);
@@ -190,7 +199,8 @@ export default function FeedbackThread({
       const optimisticComment: PostComment = {
         id: tempId,
         postId,
-        userId: user?.id ?? "",
+        userId: user?.id ?? null,
+        externalUserId: sessionId ?? null,
         content: messageText,
         parentId: "",
         isSpam: false,
@@ -199,7 +209,6 @@ export default function FeedbackThread({
         workspace_Id: Number(workspaceId),
         likesCount: 0,
         repliesCount: 0,
-        is_Liked: false,
         createdAt: new Date(),
         updatedAt: new Date().toISOString(),
         creator: {
@@ -302,6 +311,8 @@ export default function FeedbackThread({
               isAuthenticated={isAuthenticated}
               onRequireAuth={onRequireAuth}
               isPortal={isPortal}
+              sdkToken={sdkToken}
+              sessionId={sessionId}
             />
           ))}
 

@@ -4,6 +4,7 @@ import { createResponse } from "~/lib/create-response";
 import { getZodErrorMessages } from "~/lib/utils";
 import { MESSAGES } from "~/constants/messages";
 import { sendOtp } from "~/services/auth.service";
+import { getErrorMessage } from "~/lib/get-error-message";
 
 type ActionParams = {
   formData: FormData;
@@ -38,7 +39,6 @@ export async function action({ request }: Route.ActionArgs) {
   if (!handler) {
     return createResponse({
       status: "ERR",
-      showAlert: true,
       message: MESSAGES.GENERAL.ERROR,
     });
   }
@@ -51,8 +51,7 @@ export async function action({ request }: Route.ActionArgs) {
 
     return createResponse({
       status: "ERR",
-      showAlert: true,
-      message: MESSAGES.GENERAL.ERROR,
+      message: getErrorMessage(err),
     });
   }
 }

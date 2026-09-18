@@ -12,7 +12,6 @@ dayjs.locale("fa");
 
 interface CommentActionsProps {
   comment: PostComment;
-  currentUserId: string;
   isLiking: boolean;
   isLiked: boolean;
   toggleCommentLike: () => void;
@@ -21,20 +20,19 @@ interface CommentActionsProps {
   >;
   setMessageText: React.Dispatch<React.SetStateAction<string>>;
   hideReply: boolean;
+  isOwner: boolean;
 }
 
 export default function CommentActions({
   comment,
-  currentUserId,
   isLiking,
   isLiked,
   toggleCommentLike,
   setCommentActionState,
   setMessageText,
   hideReply,
+  isOwner,
 }: Readonly<CommentActionsProps>) {
-  const isOwner = comment.userId === currentUserId;
-
   return (
     <div className="mt-2.5 flex items-center text-xs gap-2 text-gray-500 dark:text-gray-400 w-full flex-wrap">
       <IconButton

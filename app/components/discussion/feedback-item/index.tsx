@@ -47,6 +47,8 @@ interface FeedbackItemProps {
   isAuthenticated?: boolean;
   onRequireAuth?: () => void;
   isPortal: boolean;
+  sessionId?: string;
+  sdkToken?: string;
 }
 
 export default function FeedbackItem({
@@ -68,6 +70,8 @@ export default function FeedbackItem({
   isAuthenticated,
   onRequireAuth,
   isPortal,
+  sessionId,
+  sdkToken,
 }: Readonly<FeedbackItemProps>) {
   const deleteFetcher = useFetcher<CreateResponse>();
   const pinFetcher = useFetcher<CreateResponse>();
@@ -100,7 +104,10 @@ export default function FeedbackItem({
   const userFullName = comment.creator?.fullName ?? "کاربر مهمان";
   const userAvatarURL = comment.creator?.avatarUrl ?? undefined;
   const isAdmin = currentUserRole === "owner" || currentUserRole === "admin";
-  const isOwner = currentUserId !== null && comment.userId === currentUserId;
+  const isOwner =
+    currentUserId !== null &&
+    (comment.userId === currentUserId ||
+      comment.externalUserId === currentUserId);
 
   const handleDeleteComment = () => {
     if (!isAuthenticated) {
@@ -109,7 +116,13 @@ export default function FeedbackItem({
     }
 
     deleteFetcher.submit(
-      { postId, commentId: comment.id, isPortal },
+      {
+        postId,
+        commentId: comment.id,
+        isPortal,
+        sessionId: sessionId ?? null,
+        sdkToken: sdkToken ?? null,
+      },
       {
         method: "DELETE",
         action: "/proxy/posts/comments",
@@ -143,7 +156,13 @@ export default function FeedbackItem({
     }
 
     likeFetcher.submit(
-      { postId, commentId: comment.id, isPortal },
+      {
+        postId,
+        commentId: comment.id,
+        isPortal,
+        sessionId: sessionId ?? null,
+        sdkToken: sdkToken ?? null,
+      },
       {
         method: "POST",
         action: "/proxy/posts/comments/toggle-like",
@@ -305,13 +324,13 @@ export default function FeedbackItem({
           <Activity mode={isPending || isSubmittingEdit ? "hidden" : "visible"}>
             <CommentActions
               comment={comment}
-              currentUserId={currentUserId ?? ""}
               isLiking={isLiking}
               isLiked={isLiked}
               toggleCommentLike={toggleCommentLike}
               setCommentActionState={setCommentActionState}
               setMessageText={setMessageText}
               hideReply={hideReply}
+              isOwner={isOwner}
             />
           </Activity>
         </div>

@@ -8,10 +8,12 @@ import { invalidatePostVotesCache } from "~/lib/cache.utils.server";
 import { toggleVotePost } from "~/services/post.service";
 import { getCurrentWorkspace } from "~/services/workspace.service";
 import { togglePortalVotePost } from "~/services/portal.service";
+import { voteSdkPost } from "~/services/sdk.service";
 
 const ToggleVotePostSchema = z.object({
   postId: z.string().min(1, "Post ID is required"),
   sessionId: z.string().optional(),
+  sdkToken: z.string().optional(),
   isPortal: z
     .string()
     .optional()
@@ -21,11 +23,10 @@ const ToggleVotePostSchema = z.object({
 type ActionContextParams = {
   formData: FormData;
   api: ApiClient;
-  workspaceId: string;
 };
 
 const actionHandlers = {
-  POST: async ({ formData, api, workspaceId }: ActionContextParams) => {
+  POST: async ({ formData, api }: ActionContextParams) => {
     const payload = Object.fromEntries(formData);
     const result = ToggleVotePostSchema.safeParse(payload);
 
@@ -37,10 +38,17 @@ const actionHandlers = {
       });
     }
 
-    const { postId, isPortal } = result.data;
-    const voteData = isPortal
-      ? await togglePortalVotePost(api, postId)
-      : await toggleVotePost(api, workspaceId, postId);
+    let voteData;
+
+    const { postId, isPortal, sdkToken, sessionId } = result.data;
+    if (sdkToken && sessionId) {
+      voteData = await voteSdkPost(api, sdkToken, sessionId, postId);
+    } else if (isPortal) {
+      voteData = await togglePortalVotePost(api, postId);
+    } else {
+      const workspace = await getCurrentWorkspace(api);
+      voteData = await toggleVotePost(api, workspace.id, postId);
+    }
 
     invalidatePostVotesCache(postId);
 
@@ -67,13 +75,11 @@ export async function action({ request, context }: Route.ActionArgs) {
   }
 
   try {
-    const workspace = await getCurrentWorkspace(api);
     const formData = await request.formData();
 
     return await handler({
       formData,
       api,
-      workspaceId: workspace.id,
     });
   } catch (error) {
     console.error(`Post vote operation (${request.method}) failed:`, error);

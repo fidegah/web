@@ -8,6 +8,7 @@ import { verifyOtp } from "~/services/auth.service";
 import { api } from "~/lib/api/client";
 import { apiRoutes } from "~/lib/api/routes";
 import type { User } from "~/types";
+import { getErrorMessage } from "~/lib/get-error-message";
 
 type ActionParams = {
   request: Request;
@@ -77,7 +78,7 @@ export async function action({ request }: Route.ActionArgs) {
     return createResponse({
       status: "ERR",
       showAlert: true,
-      message: MESSAGES.GENERAL.ERROR,
+      message: getErrorMessage(err),
     });
   }
 }

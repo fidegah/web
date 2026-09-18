@@ -30,10 +30,11 @@ export async function loader({ request, params, context }: Route.LoaderArgs) {
   const { postId, boardId } = params;
   const url = new URL(request.url);
 
-  const sessionId = url.searchParams.get("session_id");
+  const sessionId = url.searchParams.get("sessionId");
+  const sdkToken = url.searchParams.get("sdkToken");
   const theme = url.searchParams.get("theme") as "dark" | "light";
 
-  if (!sessionId || !postId || !boardId) {
+  if (!sessionId || !sdkToken || !postId || !boardId) {
     throw data(null, {
       status: 400,
     });
@@ -46,15 +47,20 @@ export async function loader({ request, params, context }: Route.LoaderArgs) {
   try {
     const [externalUser, workspace, posts, post, postComments, postVoters] =
       await Promise.all([
-        getSdkCurrentUser(api, sessionId),
-        getSdkCurrentWorkspace(api),
-        getSdkPosts(api, { page: Number(postsPage), limit: 20 }),
-        getSdkPost(api, postId),
-        getSdkPostComments(api, postId, {
+        getSdkCurrentUser(api, sdkToken, sessionId),
+        getSdkCurrentWorkspace(api, sdkToken),
+        getSdkPosts(
+          api,
+          sdkToken,
+          { page: Number(postsPage), limit: 20 },
+          sessionId,
+        ),
+        getSdkPost(api, sdkToken, postId, sessionId),
+        getSdkPostComments(api, sdkToken, postId, {
           page: Number(commentsPageParam),
           limit: 20,
         }),
-        getSdkPostVoters(api, postId, {
+        getSdkPostVoters(api, sdkToken, postId, {
           page: Number(postVotesPage),
           limit: 30,
         }),
@@ -63,11 +69,12 @@ export async function loader({ request, params, context }: Route.LoaderArgs) {
     let postCategory;
 
     if (post.categoryId) {
-      postCategory = await getSdkCategory(api, post.categoryId);
+      postCategory = await getSdkCategory(api, sdkToken, post.categoryId);
     }
 
     return {
       sessionId,
+      sdkToken,
       externalUser,
       workspace,
       posts,
@@ -93,6 +100,7 @@ export async function loader({ request, params, context }: Route.LoaderArgs) {
 export default function SdkPostWidget({ loaderData }: Route.ComponentProps) {
   const {
     sessionId,
+    sdkToken,
     externalUser,
     workspace,
     posts,
@@ -154,6 +162,8 @@ export default function SdkPostWidget({ loaderData }: Route.ComponentProps) {
         postComments={postComments}
         postVoters={postVoters}
         isWidget={true}
+        sessionId={sessionId}
+        sdkToken={sdkToken}
       />
     </>
   );

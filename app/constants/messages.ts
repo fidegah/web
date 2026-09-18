@@ -173,14 +173,18 @@ export const MESSAGES = {
   AUTH: {
     EMAIL_NOT_CONFIRMED: "ایمیل واردشده تأیید نشده است.",
     INVALID_CREDENTIALS:
-      "اطلاعات واردشده نادرست است. از صحت رمز عبور خود مطمئن شوید.",
+      "اطلاعات واردشده نادرست است. از صحت رمز عبور و ایمیل خود مطمئن شوید.",
     OVER_EMAIL_RATE_LIMIT: "لینک تأیید حساب قبلاً ارسال شده است.",
     OVER_EMAIL_SEND_RATE_LIMIT: "ایمیل تایید حساب کاربری قبلا ارسال شده است.",
-    USER_ALREADY_EXISTS: "این حساب کاربری از قبل موجود است.",
+    EMAIL_ALREADY_REGISTERED: "این حساب کاربری از قبل موجود است.",
     EMAIL_VERIFICATION_SENT: "لینک تأیید حساب کاربری با موفقیت ارسال شد.",
-    PASSWORD_RESET_EMAIL_SENT: "ایمیل بازیابی رمز عبور با موفقیت ارسال شد.",
-    PASSWORD_RESET_EMAIL_ERROR:
-      "در ارسال ایمیل بازیابی رمز عبور مشکلی پیش آمد.",
+    EMAIL_RECENTLY_DELETED:
+      "این حساب اخیر حذف شده است برای ثبت‌نام مجدد باید ۲۰ روز از زمان حذف بگذرد.",
+    EMAIL_VERIFICATION_RATE_LIMITED:
+      "لینک تایید ایمیل قبلا ارسال شده است. لطفا بعد دوباره تلاش کنید.",
+    RESET_PASSWORD_RATE_LIMITED:
+      "لینک بازیابی رمز عبور قبلا ارسال شده است لطفا بعد دوباره تلاش کنید.",
+    INVALID_RESET_LINK: "لینک بازیابی رمزعبور معتبر نیست یا منقضی شده است.",
     PASSWORD_UPDATE_SUCCESS: "رمز عبور با موفقیت تغییر کرد.",
     PASSWORD_UPDATE_ERROR:
       "در تغییر رمز عبور مشکلی پیش آمد. لطفاً دوباره تلاش کنید.",
@@ -197,7 +201,9 @@ export const MESSAGES = {
 
     // OTP
     OTP_SEND_FAILED: "در ارسال کد تأیید مشکلی پیش آمد.",
-    INVALID_OTP: "کد تأیید واردشده نادرست یا منقضی شده است.",
+    OTP_INVALID: "کد تأیید واردشده نادرست یا منقضی شده است.",
+    OTP_RATE_LIMITED:
+      "رمز یک‌بارمصرف قبلا ارسال شده است لطفا بعد دوباره تلاش کنید.",
     OTP_VERIFIED: "ورود با موفقیت انجام شد.",
   },
   SECURE_IDENTIFY: {

@@ -14,12 +14,11 @@ import type { Route } from "./+types/signup";
 import { SEO_CONFIG } from "~/constants/seo";
 import { createResponse } from "~/lib/create-response";
 import { getZodErrorMessages } from "~/lib/utils";
-import { MESSAGES } from "~/constants/messages";
 import { useActionAlert } from "~/hooks/use-action-alert";
 import { signUpSchema } from "~/schemas/auth.schema";
 import DividerWithText from "~/components/ui/divider-with-text";
-import { ApiError } from "~/lib/api/client";
 import { register } from "~/services/auth.service";
+import { getErrorMessage } from "~/lib/get-error-message";
 
 export function meta() {
   const config = SEO_CONFIG.auth.signUp;
@@ -60,21 +59,9 @@ export async function action({ request }: Route.ActionArgs) {
 
     return redirect(`/auth/verify-email?email=${email}`);
   } catch (err) {
-    const errorMessages: Record<string, string> = {
-      AUTH_EMAIL_ALREADY_REGISTERED: MESSAGES.AUTH.USER_ALREADY_EXISTS,
-      AUTH_OTP_RATE_LIMITED: MESSAGES.GENERAL.TOO_MANY_REQUESTS,
-      AUTH_RESET_PASSWORD_RATE_LIMITED: MESSAGES.GENERAL.TOO_MANY_REQUESTS,
-    };
-
-    const message =
-      err instanceof ApiError
-        ? errorMessages[err.code] || MESSAGES.GENERAL.ERROR
-        : MESSAGES.GENERAL.ERROR;
-
     return createResponse({
       status: "ERR",
-      showAlert: true,
-      message,
+      message: getErrorMessage(err),
     });
   }
 }

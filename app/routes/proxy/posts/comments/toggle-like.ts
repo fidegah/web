@@ -8,11 +8,13 @@ import { invalidatePostCache } from "~/lib/cache.utils.server";
 import { toggleCommentLike } from "~/services/post-comment.service";
 import { getCurrentWorkspace } from "~/services/workspace.service";
 import { togglePortalCommentLike } from "~/services/portal.service";
+import { toggleSdkCommentLike } from "~/services/sdk.service";
 
 const ToggleCommentLikeSchema = z.object({
   postId: z.string().min(1, "Post ID is required"),
   commentId: z.string().min(1, "Comment ID is required"),
   sessionId: z.string().optional(),
+  sdkToken: z.string().optional(),
   isPortal: z
     .string()
     .optional()
@@ -22,11 +24,10 @@ const ToggleCommentLikeSchema = z.object({
 type ActionContextParams = {
   formData: FormData;
   api: ApiClient;
-  workspaceId: string;
 };
 
 const actionHandlers = {
-  POST: async ({ formData, api, workspaceId }: ActionContextParams) => {
+  POST: async ({ formData, api }: ActionContextParams) => {
     const payload = Object.fromEntries(formData);
     const result = ToggleCommentLikeSchema.safeParse(payload);
 
@@ -37,11 +38,15 @@ const actionHandlers = {
       });
     }
 
-    const { postId, commentId, isPortal } = result.data;
-    if (isPortal) {
+    const { postId, commentId, sessionId, sdkToken, isPortal } = result.data;
+
+    if (sessionId && sdkToken) {
+      await toggleSdkCommentLike(api, sdkToken, sessionId, postId, commentId);
+    } else if (isPortal) {
       await togglePortalCommentLike(api, commentId);
     } else {
-      await toggleCommentLike(api, workspaceId, postId, commentId);
+      const workspace = await getCurrentWorkspace(api);
+      await toggleCommentLike(api, workspace.id, postId, commentId);
     }
 
     invalidatePostCache(postId);
@@ -67,14 +72,10 @@ export async function action({ request, context }: Route.ActionArgs) {
 
   try {
     const formData = await request.formData();
-    const isPortal = getFormBoolean(formData, "isPortal");
-    let workspace;
-    if (isPortal) workspace = await getCurrentWorkspace(api);
 
     return await handler({
       formData,
       api,
-      workspaceId: workspace?.id ?? "",
     });
   } catch (error) {
     console.error(`Comment like operation (${request.method}) failed:`, error);

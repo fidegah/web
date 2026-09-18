@@ -1,7 +1,5 @@
 import type {
-  Board,
   Paginated,
-  Pagination,
   Post,
   PostCategory,
   PostComment,
@@ -10,10 +8,8 @@ import type {
   Workspace,
   WorkspaceRole,
 } from "~/types";
-import PortalPostDesktop from "../feedback/post/desktop";
-import PortalPostMobile from "../feedback/post/mobile";
 import { cn } from "~/lib/utils";
-import { useOtpAuthDialog } from "~/contexts/otp-auth-dialog-context";
+import PortalPost from "../feedback/post";
 
 interface PortalFeedbackPostLayoutProps {
   user: User | null;
@@ -24,7 +20,10 @@ interface PortalFeedbackPostLayoutProps {
   postCategory: PostCategory | undefined;
   postComments: Paginated<PostComment[]>;
   postVoters: Paginated<PostVoter[]>;
+  onRequireAuth?: () => void;
   isWidget?: boolean;
+  sessionId?: string;
+  sdkToken?: string;
 }
 
 export default function PortalFeedbackPostLayout({
@@ -36,39 +35,26 @@ export default function PortalFeedbackPostLayout({
   postCategory,
   postComments,
   postVoters,
+  onRequireAuth,
   isWidget = false,
+  sessionId,
+  sdkToken,
 }: Readonly<PortalFeedbackPostLayoutProps>) {
-  const { openAuthDialog } = useOtpAuthDialog();
-
   return (
     <div className={cn(!isWidget && "w-full h-full")}>
-      <div className="hidden md:block h-full">
-        <PortalPostDesktop
-          currentUserRole={currentUserRole}
-          user={user}
-          workspace={workspace}
-          posts={posts}
-          post={post}
-          postCategory={postCategory}
-          postComments={postComments}
-          postVoters={postVoters}
-          onRequireAuth={openAuthDialog}
-        />
-      </div>
-
-      <div className="block md:hidden h-screen">
-        <PortalPostMobile
-          currentUserRole={currentUserRole}
-          user={user}
-          workspace={workspace}
-          posts={posts}
-          post={post}
-          postCategory={postCategory}
-          postComments={postComments}
-          postVoters={postVoters}
-          onRequireAuth={openAuthDialog}
-        />
-      </div>
+      <PortalPost
+        currentUserRole={currentUserRole}
+        user={user}
+        workspace={workspace}
+        posts={posts}
+        post={post}
+        postCategory={postCategory}
+        postComments={postComments}
+        postVoters={postVoters}
+        onRequireAuth={onRequireAuth}
+        sessionId={sessionId}
+        sdkToken={sdkToken}
+      />
     </div>
   );
 }

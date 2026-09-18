@@ -23,7 +23,7 @@ export function meta() {
   return [{ title: SEO_CONFIG.dashboard.setting.boards.title }];
 }
 
-export async function loader({ request, params, context }: Route.LoaderArgs) {
+export async function loader({ params, context }: Route.LoaderArgs) {
   const api = context.get(apiClientContext);
   const { boardId } = params;
 

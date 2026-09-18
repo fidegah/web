@@ -12,7 +12,6 @@ type GetCommentsParams = Partial<{
 type CreateCommentInput = {
   content: string;
   parentId?: string;
-  sessionId?: string;
 };
 
 type UpdateCommentInput = Partial<{
@@ -57,7 +56,6 @@ export async function createPostComment(
   const payload = cleanObject({
     content: body.content,
     parentId: body.parentId,
-    sessionId: body.sessionId,
   });
 
   const { data } = await api.post<PostComment, typeof payload>(

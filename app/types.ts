@@ -183,7 +183,8 @@ export interface PostDetailData {
 export interface PostComment {
   id: string;
   postId: string;
-  userId: string;
+  userId: string | null;
+  externalUserId: string | null;
   content: string;
   parentId: string;
   isSpam: boolean;
@@ -192,7 +193,6 @@ export interface PostComment {
   workspace_Id: number;
   likesCount: number;
   repliesCount: number;
-  is_Liked: boolean;
   createdAt: Date;
   updatedAt: string;
   creator: {

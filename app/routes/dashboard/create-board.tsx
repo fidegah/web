@@ -11,14 +11,13 @@ import { SEO_CONFIG } from "~/constants/seo";
 import { Card, CardContent } from "~/components/ui/card";
 import { createResponse } from "~/lib/create-response";
 import { createBoardSchema } from "~/schemas/dashboard/board";
-import { MESSAGES } from "~/constants/messages";
 import { Switch } from "~/components/ui/switch";
 import { Label } from "~/components/ui/label";
 import { createBoard } from "~/services/board.service";
 import { getCurrentWorkspace } from "~/services/workspace.service";
-import { ApiError } from "~/lib/api/client";
 import { apiClientContext } from "~/context";
 import { invalidateBoardCache } from "~/lib/cache.utils.server";
+import { getErrorMessage } from "~/lib/get-error-message";
 
 export function meta() {
   return [{ title: SEO_CONFIG.dashboard.createBoard.title }];
@@ -57,19 +56,9 @@ export async function action({ request, context }: Route.ActionArgs) {
 
     return redirect(`/dashboard/settings/boards/${board.id}`);
   } catch (err) {
-    const errorMessages: Record<string, string> = {
-      ALREADY_EXISTS: MESSAGES.BOARD.EXISTS_ERROR,
-    };
-
-    const message =
-      err instanceof ApiError
-        ? errorMessages[err.code] || MESSAGES.GENERAL.ERROR
-        : MESSAGES.GENERAL.ERROR;
-
     return createResponse({
       status: "ERR",
-      showAlert: true,
-      message,
+      message: getErrorMessage(err),
     });
   }
 }

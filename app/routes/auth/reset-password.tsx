@@ -11,6 +11,7 @@ import { getZodErrorMessages } from "~/lib/utils";
 import { MESSAGES } from "~/constants/messages";
 import { updatePasswordSchema } from "~/schemas/auth.schema";
 import { resetPassword } from "~/services/auth.service";
+import { getErrorMessage } from "~/lib/get-error-message";
 
 export function meta() {
   const config = SEO_CONFIG.auth.updatePassword;
@@ -56,12 +57,12 @@ export async function action({ request }: Route.ActionArgs) {
     });
 
     return redirect("/auth/login?success=password-updated");
-  } catch (error) {
-    console.error("Password reset flow failed:", error);
+  } catch (err) {
+    console.error("Password reset flow failed:", err);
 
     return createResponse({
       status: "ERR",
-      message: MESSAGES.AUTH.PASSWORD_UPDATE_ERROR,
+      message: getErrorMessage(err),
     });
   }
 }

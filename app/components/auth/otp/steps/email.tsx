@@ -2,6 +2,7 @@ import { Mail } from "lucide-react";
 import React, { type ChangeEvent } from "react";
 import type { FetcherWithComponents } from "react-router";
 import { RippleButton } from "~/components/ui/animate-ui/buttons/ripple";
+import ErrorMessage from "~/components/ui/error-message";
 import Input from "~/components/ui/input-custom";
 import SubmitButton from "~/components/ui/submit-button";
 import type { CreateResponse } from "~/types";
@@ -39,6 +40,8 @@ export default function EmailStep({
           setEmail(e.target.value)
         }
       />
+
+      <ErrorMessage data={fetcher.data} />
 
       <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-3 pt-1">
         <SubmitButton

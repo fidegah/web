@@ -9,6 +9,7 @@ import { createPost, updatePost } from "~/services/post.service";
 import { getCurrentWorkspace } from "~/services/workspace.service";
 import { apiClientContext, type ApiClient } from "~/context";
 import { createPortalPost } from "~/services/portal.service";
+import { createSdkPost } from "~/services/sdk.service";
 
 const UpdatePostSchema = z.object({
   postId: z.string().min(1, "Post ID is required"),
@@ -23,11 +24,10 @@ const UpdatePostSchema = z.object({
 type ActionContextParams = {
   formData: FormData;
   api: ApiClient;
-  workspaceId: string;
 };
 
 const actionHandlers = {
-  POST: async ({ formData, api, workspaceId }: ActionContextParams) => {
+  POST: async ({ formData, api }: ActionContextParams) => {
     const payload = Object.fromEntries(formData);
     const result = createPostSchema.safeParse(payload);
 
@@ -40,23 +40,37 @@ const actionHandlers = {
 
     const { boardId, categoryId, title, description } = result.data;
     const sessionId = formData.get("sessionId")?.toString();
+    const sdkToken = formData.get("sdkToken")?.toString();
     const isPortal = getFormBoolean(formData, "isPortal");
 
-    const post = isPortal
-      ? await createPortalPost(api, {
-          boardId,
-          categoryId,
-          title,
-          description: description ?? undefined,
-          visibility: "public",
-        })
-      : await createPost(api, workspaceId, {
-          boardId,
-          categoryId,
-          title,
-          description: description ?? undefined,
-          visibility: "public",
-        });
+    let post;
+
+    if (sessionId && sdkToken) {
+      post = await createSdkPost(api, sdkToken, sessionId, {
+        boardId,
+        categoryId,
+        title,
+        description: description ?? undefined,
+        visibility: "public",
+      });
+    } else if (isPortal) {
+      post = await createPortalPost(api, {
+        boardId,
+        categoryId,
+        title,
+        description: description ?? undefined,
+        visibility: "public",
+      });
+    } else {
+      const workspace = await getCurrentWorkspace(api);
+      post = await createPost(api, workspace.id, {
+        boardId,
+        categoryId,
+        title,
+        description: description ?? undefined,
+        visibility: "public",
+      });
+    }
 
     invalidatePostVotesCache(null);
 
@@ -68,7 +82,7 @@ const actionHandlers = {
     });
   },
 
-  PATCH: async ({ formData, api, workspaceId }: ActionContextParams) => {
+  PATCH: async ({ formData, api }: ActionContextParams) => {
     const payload = Object.fromEntries(formData);
     const result = UpdatePostSchema.safeParse(payload);
 
@@ -79,17 +93,12 @@ const actionHandlers = {
       });
     }
 
-    const {
-      postId,
-      boardId,
-      categoryId,
-      title,
-      description,
-      statusId,
-      sessionId,
-    } = result.data;
+    const { postId, boardId, categoryId, title, description, statusId } =
+      result.data;
 
-    await updatePost(api, workspaceId, postId, {
+    const workspace = await getCurrentWorkspace(api);
+
+    await updatePost(api, workspace.id, postId, {
       boardId,
       categoryId,
       title,
@@ -129,13 +138,11 @@ export async function action({ request, context }: Route.ActionArgs) {
   }
 
   try {
-    const workspace = await getCurrentWorkspace(api);
     const formData = await request.formData();
 
     return await handler({
       formData,
       api,
-      workspaceId: workspace.id,
     });
   } catch (err) {
     console.error(`Post operation (${request.method}) failed:`, err);

@@ -12,6 +12,8 @@ interface PortalFeedbackLayoutProps {
   onBoardClick: (boardId: string) => void;
   onPostClick: (postId: string) => void;
   className?: string;
+  sessionId?: string;
+  sdkToken?: string;
 }
 
 export default function PortalFeedbackLayout({
@@ -21,12 +23,18 @@ export default function PortalFeedbackLayout({
   onBoardClick,
   onPostClick,
   className,
+  sessionId,
+  sdkToken,
 }: Readonly<PortalFeedbackLayoutProps>) {
   return (
     <div className={cn("p-3 md:px-6 lg:px-10", className)}>
       <div className="w-full grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="order-1 lg:order-1 lg:col-span-2 flex flex-col">
-          <PortalPostFormCard boardId={board.id} />
+          <PortalPostFormCard
+            boardId={board.id}
+            sessionId={sessionId}
+            sdkToken={sdkToken}
+          />
 
           <div className="mt-3 md:mt-6">
             <PortalPostsCard posts={posts} handlePostClick={onPostClick} />

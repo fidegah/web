@@ -1,6 +1,5 @@
 import { Link, redirect, useFetcher } from "react-router";
 import { createResponse } from "~/lib/create-response";
-import { MESSAGES } from "~/constants/messages";
 import {
   CardContent,
   CardDescription,
@@ -22,9 +21,10 @@ import { commitSession, getSession } from "~/sessions.server";
 import { Activity } from "react";
 import { loginSchema } from "~/schemas/auth.schema";
 import DividerWithText from "~/components/ui/divider-with-text";
-import { api, ApiError } from "~/lib/api/client";
+import { api } from "~/lib/api/client";
 import { login } from "~/services/auth.service";
 import { apiRoutes } from "~/lib/api/routes";
+import { getErrorMessage } from "~/lib/get-error-message";
 
 export function meta() {
   const config = SEO_CONFIG.auth.login;
@@ -107,27 +107,9 @@ export async function action({ request }: Route.ActionArgs) {
       },
     });
   } catch (err) {
-    const errorMessagesByCode: Record<string, string> = {
-      AUTH_RESET_PASSWORD_RATE_LIMITED: MESSAGES.GENERAL.TOO_MANY_REQUESTS,
-    };
-
-    const errorMessagesByMessage: Record<string, string> = {
-      "Invalid email or password": MESSAGES.AUTH.INVALID_CREDENTIALS,
-      "Please verify your email first": MESSAGES.AUTH.EMAIL_NOT_CONFIRMED,
-    };
-
-    let message: string = MESSAGES.GENERAL.ERROR;
-
-    if (err instanceof ApiError) {
-      message =
-        errorMessagesByCode[err.code] ||
-        errorMessagesByMessage[err.message] ||
-        MESSAGES.GENERAL.ERROR;
-    }
-
     return createResponse({
       status: "ERR",
-      message,
+      message: getErrorMessage(err),
     });
   }
 }

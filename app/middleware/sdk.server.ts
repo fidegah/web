@@ -10,7 +10,7 @@ export const sdkMiddleware: MiddlewareFunction = async (
   const url = new URL(request.url);
 
   const sessionId =
-    url.searchParams.get("session_id") ?? request.headers.get("x-session-id");
+    url.searchParams.get("sessionId") ?? request.headers.get("x-session-id");
 
   const sdkToken =
     url.searchParams.get("sdkToken") ?? request.headers.get("x-sdk-token");

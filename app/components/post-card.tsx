@@ -15,6 +15,8 @@ interface PostCardProps {
   onRequireAuth?: () => void;
   showUpvoteButton?: boolean;
   isPortal?: boolean;
+  sessionId?: string;
+  sdkToken?: string;
 }
 
 export default function PostCard({
@@ -28,12 +30,14 @@ export default function PostCard({
   onRequireAuth,
   showUpvoteButton = true,
   isPortal = false,
+  sessionId,
+  sdkToken,
 }: Readonly<PostCardProps>) {
   return (
     <button
       onClick={onClick}
       className={cn(
-        "group flex items-center justify-between gap-2 rounded-lg px-3 py-2 cursor-pointer transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5",
+        "group flex items-center justify-between gap-2 rounded-lg px-3 py-2 cursor-pointer transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5 w-full",
         isActive
           ? "border border-blue-400 bg-blue-50/50 hover:bg-blue-50/70 hover:border-blue-400 dark:bg-blue-950/30 dark:border-blue-700"
           : "border border-border/50 bg-muted/30 hover:bg-muted/60 hover:border-border",
@@ -77,6 +81,8 @@ export default function PostCard({
             isAuthenticated={isAuthenticated}
             onRequireAuth={onRequireAuth}
             isPortal={isPortal}
+            sessionId={sessionId}
+            sdkToken={sdkToken}
           />
 
           <ChevronRightIcon

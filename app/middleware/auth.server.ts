@@ -1,5 +1,5 @@
 import { redirect, type MiddlewareFunction } from "react-router";
-import { getSession } from "~/sessions.server";
+import { getSession, destroySession } from "~/sessions.server";
 import { apiClientContext } from "~/context";
 import { createApiClient } from "~/lib/api/index.server";
 import { isTokenExpired, refreshSession } from "~/lib/auth-utils.server";
@@ -21,7 +21,11 @@ export const authMiddleware: MiddlewareFunction = async (
       accessToken = refreshResult.accessToken;
       newCookieHeader = refreshResult.cookieHeader;
     } else {
-      throw redirect("/auth/login");
+      throw redirect("/auth/login", {
+        headers: {
+          "Set-Cookie": await destroySession(session),
+        },
+      });
     }
   }
 

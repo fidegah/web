@@ -14,6 +14,7 @@ import {
   getPortalPosts,
   getPortalPostVoters,
 } from "~/services/portal.service";
+import { useOtpAuthDialog } from "~/contexts/otp-auth-dialog-context";
 
 export function meta({ loaderData }: Route.MetaArgs) {
   const { workspace, post, postCategory } = loaderData;
@@ -102,6 +103,8 @@ export async function loader({ request, params, context }: Route.LoaderArgs) {
 }
 
 export default function PortalPost({ loaderData }: Route.ComponentProps) {
+  const { openAuthDialog } = useOtpAuthDialog();
+
   const {
     user,
     workspace,
@@ -122,6 +125,7 @@ export default function PortalPost({ loaderData }: Route.ComponentProps) {
       postCategory={postCategory}
       postComments={postComments}
       postVoters={postVoters}
+      onRequireAuth={openAuthDialog}
     />
   );
 }

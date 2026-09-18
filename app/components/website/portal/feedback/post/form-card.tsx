@@ -1,5 +1,5 @@
 import { Pencil } from "lucide-react";
-import { useFetcher, useNavigate, useSearchParams } from "react-router";
+import { useFetcher, useNavigate } from "react-router";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import ErrorMessage from "~/components/ui/error-message";
 import Input from "~/components/ui/input-custom";
@@ -11,17 +11,18 @@ import type { CreateResponse, Post } from "~/types";
 
 interface PortalPostFormCardProps {
   boardId: string;
+  sessionId?: string;
+  sdkToken?: string;
 }
 
 export default function PortalPostFormCard({
   boardId,
+  sessionId,
+  sdkToken,
 }: Readonly<PortalPostFormCardProps>) {
-  const fetcher = useFetcher();
+  const fetcher = useFetcher<CreateResponse<Post>>();
   useActionAlert(fetcher.data);
   const navigate = useNavigate();
-
-  const [searchParams] = useSearchParams();
-  const sessionId = searchParams.get("sessionId");
 
   const isLoading = fetcher.state !== "idle";
 
@@ -30,8 +31,10 @@ export default function PortalPostFormCard({
     const fetcherData = fetcher.data as CreateResponse<Post>;
 
     if (fetcherData?.status === "OK") {
-      if (sessionId) {
-        navigate(`post/${fetcherData.data?.id}?sessionId=${sessionId}`);
+      if (sessionId && sdkToken) {
+        navigate(
+          `post/${fetcherData.data?.id}?sessionId=${sessionId}&sdkToken=${sdkToken}`,
+        );
       } else {
         navigate(`post/${fetcherData.data?.id}`);
       }
@@ -69,8 +72,11 @@ export default function PortalPostFormCard({
 
             <input type="hidden" name="boardId" value={String(boardId)} />
             <input type="hidden" name="isPortal" value="true" />
-            {sessionId && (
-              <input type="hidden" name="sessionId" value={sessionId} />
+            {sessionId && sdkToken && (
+              <>
+                <input type="hidden" name="sessionId" value={sessionId} />
+                <input type="hidden" name="sdkToken" value={sdkToken} />
+              </>
             )}
 
             <ErrorMessage data={fetcher.data} />

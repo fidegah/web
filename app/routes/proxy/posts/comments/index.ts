@@ -16,12 +16,18 @@ import {
   deletePortalPostComment,
   updatePortalPostComment,
 } from "~/services/portal.service";
+import {
+  createSdkPostComment,
+  deleteSdkPostComment,
+  updateSdkPostComment,
+} from "~/services/sdk.service";
 
 const CreateCommentSchema = z.object({
   postId: z.string().min(1, "Post ID is required"),
   content: z.string().min(1, "Content is required"),
   parentId: z.string().optional(),
   sessionId: z.string().optional(),
+  sdkToken: z.string().optional(),
   isPortal: z
     .string()
     .optional()
@@ -32,6 +38,8 @@ const UpdateCommentSchema = z.object({
   postId: z.string().min(1, "Post ID is required"),
   commentId: z.string().min(1, "Comment ID is required"),
   content: z.string().min(1, "Content is required"),
+  sessionId: z.string().optional(),
+  sdkToken: z.string().optional(),
   isPortal: z
     .string()
     .optional()
@@ -41,6 +49,8 @@ const UpdateCommentSchema = z.object({
 const DeleteCommentSchema = z.object({
   postId: z.string().min(1, "Post ID is required"),
   commentId: z.string().min(1, "Comment ID is required"),
+  sessionId: z.string().optional(),
+  sdkToken: z.string().optional(),
   isPortal: z
     .string()
     .optional()
@@ -50,11 +60,10 @@ const DeleteCommentSchema = z.object({
 type ActionContextParams = {
   formData: FormData;
   api: ApiClient;
-  workspaceId: string;
 };
 
 const actionHandlers = {
-  POST: async ({ formData, api, workspaceId }: ActionContextParams) => {
+  POST: async ({ formData, api }: ActionContextParams) => {
     const payload = Object.fromEntries(formData);
     const result = CreateCommentSchema.safeParse(payload);
 
@@ -65,19 +74,34 @@ const actionHandlers = {
       });
     }
 
-    const { postId, content, parentId, sessionId, isPortal } = result.data;
+    const { postId, content, parentId, sessionId, sdkToken, isPortal } =
+      result.data;
 
-    const newComment = isPortal
-      ? await createPortalPostComment(api, postId, {
+    let newComment;
+
+    if (sessionId && sdkToken) {
+      newComment = await createSdkPostComment(
+        api,
+        sdkToken,
+        sessionId,
+        postId,
+        {
           content,
           parentId,
-          sessionId,
-        })
-      : await createPostComment(api, workspaceId, postId, {
-          content,
-          parentId,
-          sessionId,
-        });
+        },
+      );
+    } else if (isPortal) {
+      newComment = await createPortalPostComment(api, postId, {
+        content,
+        parentId,
+      });
+    } else {
+      const workspace = await getCurrentWorkspace(api);
+      newComment = await createPostComment(api, workspace.id, postId, {
+        content,
+        parentId,
+      });
+    }
 
     invalidatePostCache(postId);
 
@@ -87,7 +111,7 @@ const actionHandlers = {
     });
   },
 
-  PATCH: async ({ formData, api, workspaceId }: ActionContextParams) => {
+  PATCH: async ({ formData, api }: ActionContextParams) => {
     const payload = Object.fromEntries(formData);
     const result = UpdateCommentSchema.safeParse(payload);
 
@@ -98,15 +122,32 @@ const actionHandlers = {
       });
     }
 
-    const { postId, commentId, content, isPortal } = result.data;
+    const { postId, commentId, content, sessionId, sdkToken, isPortal } =
+      result.data;
 
-    const comment = isPortal
-      ? await updatePortalPostComment(api, commentId, {
+    let comment;
+
+    if (sessionId && sdkToken) {
+      comment = await updateSdkPostComment(
+        api,
+        sdkToken,
+        sessionId,
+        postId,
+        commentId,
+        {
           content,
-        })
-      : await updatePostComment(api, workspaceId, postId, commentId, {
-          content,
-        });
+        },
+      );
+    } else if (isPortal) {
+      comment = await updatePortalPostComment(api, commentId, {
+        content,
+      });
+    } else {
+      const workspace = await getCurrentWorkspace(api);
+      comment = await updatePostComment(api, workspace.id, postId, commentId, {
+        content,
+      });
+    }
 
     invalidatePostCache(postId);
 
@@ -118,7 +159,7 @@ const actionHandlers = {
     });
   },
 
-  DELETE: async ({ formData, api, workspaceId }: ActionContextParams) => {
+  DELETE: async ({ formData, api }: ActionContextParams) => {
     const payload = Object.fromEntries(formData);
     const result = DeleteCommentSchema.safeParse(payload);
 
@@ -129,12 +170,15 @@ const actionHandlers = {
       });
     }
 
-    const { postId, commentId, isPortal } = result.data;
+    const { postId, commentId, sessionId, sdkToken, isPortal } = result.data;
 
-    if (isPortal) {
+    if (sessionId && sdkToken) {
+      await deleteSdkPostComment(api, sdkToken, sessionId, postId, commentId);
+    } else if (isPortal) {
       await deletePortalPostComment(api, commentId);
     } else {
-      await deletePostComment(api, workspaceId, postId, commentId);
+      const workspace = await getCurrentWorkspace(api);
+      await deletePostComment(api, workspace.id, postId, commentId);
     }
 
     invalidatePostCache(postId);
@@ -161,13 +205,11 @@ export async function action({ request, context }: Route.ActionArgs) {
   }
 
   try {
-    const workspace = await getCurrentWorkspace(api);
     const formData = await request.formData();
 
     return await handler({
       formData,
       api,
-      workspaceId: workspace.id,
     });
   } catch (err) {
     console.error(`Post comment operation (${request.method}) failed:`, err);
