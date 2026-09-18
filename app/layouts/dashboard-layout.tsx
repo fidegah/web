@@ -27,9 +27,9 @@ export function meta() {
 
 export const middleware = [authMiddleware];
 
-export async function loader({ request, context }: Route.LoaderArgs) {
+export async function loader({ request, context, url }: Route.LoaderArgs) {
   const api = context.get(apiClientContext);
-  const subdomain = getSubdomain(request);
+  const subdomain = getSubdomain(url);
 
   const session = await getSession(request.headers.get("Cookie"));
   if (session.get("authStage") === "portal_only") {
@@ -55,7 +55,7 @@ export async function loader({ request, context }: Route.LoaderArgs) {
 
   if (!subdomain) {
     if (workspaces.length === 1) {
-      return replace(getWorkspaceUrl(workspaces[0].subdomain, request));
+      return replace(getWorkspaceUrl(workspaces[0].subdomain, request, url));
     }
 
     if (workspaces.length > 1) {

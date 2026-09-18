@@ -34,8 +34,7 @@ export function meta() {
   ];
 }
 
-export async function loader({ request }: Route.LoaderArgs) {
-  const url = new URL(request.url);
+export async function loader({ url }: Route.LoaderArgs) {
   const isPasswordUpdated =
     url.searchParams.get("success") === "password-updated";
 

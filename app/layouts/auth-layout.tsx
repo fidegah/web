@@ -3,7 +3,7 @@ import { Card } from "~/components/ui/card";
 import type { Route } from "./+types/auth-layout";
 import { getSession } from "~/sessions.server";
 
-export async function loader({ request }: Route.LoaderArgs) {
+export async function loader({ request, url }: Route.LoaderArgs) {
   const cookieHeader = request.headers.get("Cookie");
   const session = await getSession(cookieHeader);
 
@@ -15,14 +15,13 @@ export async function loader({ request }: Route.LoaderArgs) {
     return replace("/dashboard");
   }
 
-  const currentUrl = new URL(request.url);
-  const hostParts = currentUrl.hostname.split(".");
+  const hostParts = url.hostname.split(".");
 
   if (hostParts.length > 2) {
     hostParts.shift();
     const mainHostname = hostParts.join(".");
 
-    const targetUrl = `${currentUrl.protocol}//${mainHostname}${currentUrl.port ? ":" + currentUrl.port : ""}${currentUrl.pathname}${currentUrl.search}`;
+    const targetUrl = `${url.protocol}//${mainHostname}${url.port ? ":" + url.port : ""}${url.pathname}${url.search}`;
 
     return replace(targetUrl);
   }

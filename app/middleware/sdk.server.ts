@@ -4,11 +4,9 @@ import { apiClientContext } from "~/context";
 import { createApiClient } from "~/lib/api/index.server";
 
 export const sdkMiddleware: MiddlewareFunction = async (
-  { request, context },
+  { request, context, url },
   next,
 ) => {
-  const url = new URL(request.url);
-
   const sessionId =
     url.searchParams.get("sessionId") ?? request.headers.get("x-session-id");
 
@@ -31,7 +29,7 @@ export const sdkMiddleware: MiddlewareFunction = async (
     duplex: "half",
   });
 
-  const apiClient = createApiClient(null, modifiedRequest);
+  const apiClient = createApiClient(null, modifiedRequest, url);
 
   context.set(apiClientContext, apiClient);
 

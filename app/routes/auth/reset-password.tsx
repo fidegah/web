@@ -25,8 +25,7 @@ export function meta() {
   ];
 }
 
-export async function action({ request }: Route.ActionArgs) {
-  const url = new URL(request.url);
+export async function action({ request, url }: Route.ActionArgs) {
   const token = url.searchParams.get("token");
 
   const formData = await request.formData();

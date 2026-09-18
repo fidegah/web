@@ -26,8 +26,7 @@ export function getZodErrorMessages(error: ZodError) {
   return error.issues.map((e) => e.message).join(" | ");
 }
 
-export function getSubdomain(request: Request): string | null {
-  const url = new URL(request.url);
+export function getSubdomain(url: URL): string | null {
   const hostname = url.hostname;
   const baseDomain = process.env.VITE_APP_DOMAIN?.split(":")[0];
 

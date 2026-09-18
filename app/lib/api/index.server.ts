@@ -4,8 +4,9 @@ import { getSubdomain } from "../utils";
 export const createApiClient = (
   accessToken: string | null,
   request?: Request,
+  url?: URL,
 ) => {
-  const subdomain = request ? getSubdomain(request) : null;
+  const subdomain = url ? getSubdomain(url) : null;
   const sdkToken = request?.headers.get("x-sdk-token");
 
   const withHeader = (opts: RequestOptions = {}): RequestOptions => ({

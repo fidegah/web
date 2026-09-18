@@ -65,10 +65,9 @@ function StepCard({ label, status, stepNumber }: StepCardProps) {
   );
 }
 
-export async function loader({ request }: Route.LoaderArgs) {
+export async function loader({ request, url }: Route.LoaderArgs) {
   const DEFAULT_AUTH_ERROR = MESSAGES.AUTH.GOOGLE_AUTH_FAILED;
 
-  const url = new URL(request.url);
   const code = url.searchParams.get("code");
   const rawRedirectTo = url.searchParams.get("redirectTo");
 

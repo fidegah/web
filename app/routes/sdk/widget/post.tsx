@@ -25,10 +25,9 @@ export function meta() {
   ];
 }
 
-export async function loader({ request, params, context }: Route.LoaderArgs) {
+export async function loader({ params, context, url }: Route.LoaderArgs) {
   const api = context.get(apiClientContext);
   const { postId, boardId } = params;
-  const url = new URL(request.url);
 
   const sessionId = url.searchParams.get("sessionId");
   const sdkToken = url.searchParams.get("sdkToken");

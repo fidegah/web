@@ -63,7 +63,7 @@ export async function loader({ request, context }: Route.LoaderArgs) {
   return { hasWorkspace };
 }
 
-export async function action({ request, context }: Route.ActionArgs) {
+export async function action({ request, context, url }: Route.ActionArgs) {
   const api = context.get(apiClientContext);
 
   const formData = await request.formData();
@@ -172,6 +172,7 @@ export async function action({ request, context }: Route.ActionArgs) {
         const replaceUrl = getWorkspaceUrl(
           userWorkspaces[0].subdomain,
           request,
+          url,
         );
         return replace(replaceUrl);
       }

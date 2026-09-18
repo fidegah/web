@@ -1,10 +1,9 @@
 export function getWorkspaceUrl(
   subdomain: string,
   request: Request,
+  url: URL,
   path: string = "/dashboard",
 ): string {
-  const url = new URL(request.url);
-
   const isDevelopment = process.env.NODE_ENV === "development";
 
   const forwardedHost =

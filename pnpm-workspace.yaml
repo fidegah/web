@@ -1,6 +1,2 @@
-ignoredBuiltDependencies:
-  - "@tailwindcss/oxide"
-  - esbuild
-
-onlyBuiltDependencies:
-  - supabase
+allowBuilds:
+  esbuild: true

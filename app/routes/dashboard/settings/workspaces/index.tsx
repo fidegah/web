@@ -50,7 +50,7 @@ export async function loader({ request, context }: Route.LoaderArgs) {
   }
 }
 
-export async function action({ request, context }: Route.ActionArgs) {
+export async function action({ request, context, url }: Route.ActionArgs) {
   const api = context.get(apiClientContext);
 
   const method = request.method;
@@ -87,12 +87,11 @@ export async function action({ request, context }: Route.ActionArgs) {
         invalidateWorkspacesCache();
 
         if (subdomain) {
-          const currentUrl = new URL(request.url);
-          const hostParts = currentUrl.hostname.split(".");
+          const hostParts = url.hostname.split(".");
           hostParts.shift();
 
           const newHostname = `${subdomain}.${hostParts.join(".")}`;
-          const targetUrl = `${currentUrl.protocol}//${newHostname}${currentUrl.port ? ":" + currentUrl.port : ""}${currentUrl.pathname}${currentUrl.search}`;
+          const targetUrl = `${url.protocol}//${newHostname}${url.port ? ":" + url.port : ""}${url.pathname}${url.search}`;
 
           return replace(targetUrl);
         }

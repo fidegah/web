@@ -23,8 +23,8 @@ export function meta() {
   return [{ title: SEO_CONFIG.dashboard.createBoard.title }];
 }
 
-export async function loader({ request }: Route.LoaderArgs) {
-  return { subdomain: getSubdomain(request) };
+export async function loader({ url }: Route.LoaderArgs) {
+  return { subdomain: getSubdomain(url) };
 }
 
 export async function action({ request, context }: Route.ActionArgs) {

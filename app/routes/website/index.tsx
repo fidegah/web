@@ -18,11 +18,10 @@ import {
 } from "~/services/portal.service";
 import { apiClientContext } from "~/context";
 
-export async function loader({ request, context }: Route.LoaderArgs) {
+export async function loader({ context, url }: Route.LoaderArgs) {
   const api = context.get(apiClientContext);
-  const isSubdomainExist = !!getSubdomain(request);
+  const isSubdomainExist = !!getSubdomain(url);
 
-  const url = new URL(request.url);
   const postPageParam = url.searchParams.get("postPage") || "1";
 
   try {

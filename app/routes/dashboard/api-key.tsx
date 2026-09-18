@@ -26,9 +26,8 @@ export function meta() {
   return [{ title: SEO_CONFIG.dashboard.apiKey.title }];
 }
 
-export async function loader({ request, context }: Route.LoaderArgs) {
+export async function loader({ context, url }: Route.LoaderArgs) {
   const api = context.get(apiClientContext);
-  const url = new URL(request.url);
 
   const pageParam = url.searchParams.get("page") || "1";
 

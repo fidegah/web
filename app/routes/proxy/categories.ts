@@ -10,9 +10,8 @@ const CategoriesQuerySchema = z.object({
   boardId: z.string().min(1, "Board ID is required"),
 });
 
-export async function loader({ request, context }: Route.LoaderArgs) {
+export async function loader({ request, context, url }: Route.LoaderArgs) {
   const api = context.get(apiClientContext) as ApiClient;
-  const url = new URL(request.url);
 
   const rawBoardId = url.searchParams.get("boardId");
   const result = CategoriesQuerySchema.safeParse({ boardId: rawBoardId });

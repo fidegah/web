@@ -6,10 +6,7 @@ import PortalMenu from "~/components/website/portal/menu";
 import { ERROR_CODE } from "~/constants/errors";
 import PublicHeaderMenu from "~/components/website/public/menu/header";
 import PublicFooterMenu from "~/components/website/public/menu/footer";
-import {
-  OtpAuthDialogProvider,
-  useOtpAuthDialog,
-} from "~/contexts/otp-auth-dialog-context";
+import { OtpAuthDialogProvider } from "~/contexts/otp-auth-dialog-context";
 import OtpAuthDialog from "~/components/auth/otp/auth-dialog";
 import { getWorkspaces } from "~/services/workspace.service";
 import { getCurrentUser } from "~/services/user.service";
@@ -21,10 +18,9 @@ import { getPortalCurrentWorkspace } from "~/services/portal.service";
 
 export const middleware = [optionalAuthMiddleware];
 
-export async function loader({ request, context }: Route.LoaderArgs) {
+export async function loader({ request, context, url }: Route.LoaderArgs) {
   const api = context.get(apiClientContext);
-  const isSubdomainExists = !!getSubdomain(request);
-  const url = new URL(request.url);
+  const isSubdomainExists = !!getSubdomain(url);
 
   const portalPaths = ["feedback", "changelogs", "polls"];
 

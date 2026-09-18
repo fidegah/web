@@ -5,7 +5,7 @@ import { createApiClient } from "~/lib/api/index.server";
 import { isTokenExpired, refreshSession } from "~/lib/auth-utils.server";
 
 export const authMiddleware: MiddlewareFunction = async (
-  { request, context },
+  { request, context, url },
   next,
 ) => {
   const cookieHeader = request.headers.get("Cookie");
@@ -29,7 +29,7 @@ export const authMiddleware: MiddlewareFunction = async (
     }
   }
 
-  const apiClient = createApiClient(accessToken, request);
+  const apiClient = createApiClient(accessToken, request, url);
   context.set(apiClientContext, apiClient);
 
   const response = (await next()) as Response;

@@ -11,10 +11,9 @@ const PostCommentsSummaryQuerySchema = z.object({
   postId: z.string().min(1, "Post ID is required"),
 });
 
-export async function loader({ request, context }: Route.LoaderArgs) {
+export async function loader({ context, url }: Route.LoaderArgs) {
   const api = context.get(apiClientContext) as ApiClient;
 
-  const url = new URL(request.url);
   const rawPostId = url.searchParams.get("postId");
 
   const result = PostCommentsSummaryQuerySchema.safeParse({

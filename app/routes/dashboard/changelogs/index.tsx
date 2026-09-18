@@ -21,9 +21,8 @@ export function meta() {
   return [{ title: SEO_CONFIG.dashboard.changelog.list.title }];
 }
 
-export async function loader({ request, context }: Route.LoaderArgs) {
+export async function loader({ context, url }: Route.LoaderArgs) {
   const api = context.get(apiClientContext);
-  const url = new URL(request.url);
 
   const searchParam = url.searchParams.get("search") || "";
   const tagIdsParam = url.searchParams.get("tagIds") || "";

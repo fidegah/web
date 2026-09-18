@@ -16,9 +16,8 @@ const CommentRepliesQuerySchema = z.object({
     .transform((value) => value === "true"),
 });
 
-export async function loader({ request, context }: LoaderFunctionArgs) {
+export async function loader({ context, url }: LoaderFunctionArgs) {
   const api = context.get(apiClientContext) as ApiClient;
-  const url = new URL(request.url);
 
   const queryParams = {
     postId: url.searchParams.get("postId"),

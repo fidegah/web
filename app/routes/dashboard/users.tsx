@@ -30,7 +30,7 @@ export function meta() {
   return [{ title: SEO_CONFIG.dashboard.users.title }];
 }
 
-export async function loader({ request, params, context }: Route.LoaderArgs) {
+export async function loader({ params, context, url }: Route.LoaderArgs) {
   const api = context.get(apiClientContext);
   const { userId } = params;
 
@@ -39,7 +39,6 @@ export async function loader({ request, params, context }: Route.LoaderArgs) {
     return replace(`/dashboard/users/${currentUser.id}`);
   }
 
-  const url = new URL(request.url);
   const usersSearch = url.searchParams.get("users-search") || "";
   const userActivitySearch = url.searchParams.get("user-activity-search") || "";
   const activity = url.searchParams.get("activity") || "";

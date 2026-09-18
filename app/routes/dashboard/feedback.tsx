@@ -46,7 +46,7 @@ export function meta() {
   return [{ title: SEO_CONFIG.dashboard.feedbacks.title }];
 }
 
-export async function loader({ request, params, context }: Route.LoaderArgs) {
+export async function loader({ params, context, url }: Route.LoaderArgs) {
   const api = context.get(apiClientContext);
   const { boardId, postId } = params;
 
@@ -88,7 +88,6 @@ export async function loader({ request, params, context }: Route.LoaderArgs) {
     }
   }
 
-  const url = new URL(request.url);
   const searchParam = url.searchParams.get("search") || "";
   const boardIdsParam = url.searchParams.get("boardIds") || "";
   const tagIdsParam = url.searchParams.get("tagIds") || "";

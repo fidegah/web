@@ -20,9 +20,8 @@ export function meta() {
   return [{ title: SEO_CONFIG.dashboard.home.title }];
 }
 
-export async function loader({ request, context }: Route.LoaderArgs) {
+export async function loader({ context, url }: Route.LoaderArgs) {
   const api = context.get(apiClientContext);
-  const url = new URL(request.url);
 
   const activityOverviewTimeRange =
     url.searchParams.get("activity-overview-time-range") || "monthly";

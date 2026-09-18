@@ -23,8 +23,7 @@ export function meta({ loaderData }: Route.MetaArgs) {
   ];
 }
 
-export async function loader({ request }: Route.LoaderArgs) {
-  const url = new URL(request.url);
+export async function loader({ url }: Route.LoaderArgs) {
   const token = url.searchParams.get("token");
   const email = url.searchParams.get("email");
 

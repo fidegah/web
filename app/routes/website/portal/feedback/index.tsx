@@ -34,7 +34,7 @@ export function meta({ loaderData }: Route.MetaArgs) {
   ];
 }
 
-export async function loader({ request, params, context }: Route.LoaderArgs) {
+export async function loader({ params, context, url }: Route.LoaderArgs) {
   const { boardId } = params;
   const api = context.get(apiClientContext);
 
@@ -47,7 +47,6 @@ export async function loader({ request, params, context }: Route.LoaderArgs) {
     return replace(`/feedback/board/${defaultBoardId}`);
   }
 
-  const url = new URL(request.url);
   const postsSearch = url.searchParams.get("postSearch") || "";
   const postsPage = url.searchParams.get("postPage") || "1";
 

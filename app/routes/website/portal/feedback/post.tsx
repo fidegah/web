@@ -34,7 +34,12 @@ export function meta({ loaderData }: Route.MetaArgs) {
   ];
 }
 
-export async function loader({ request, params, context }: Route.LoaderArgs) {
+export async function loader({
+  request,
+  params,
+  context,
+  url,
+}: Route.LoaderArgs) {
   const { postId, boardId } = params;
 
   if (!postId || !boardId)
@@ -45,7 +50,6 @@ export async function loader({ request, params, context }: Route.LoaderArgs) {
   const api = context.get(apiClientContext);
   const isAuth = await isAuthenticated(request);
 
-  const url = new URL(request.url);
   const postsPage = url.searchParams.get("postPage") || "1";
   const commentsPageParam = url.searchParams.get("commentsPage") || "1";
   const postVotesPage = url.searchParams.get("postVotesPage") || "1";

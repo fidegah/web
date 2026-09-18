@@ -12,10 +12,9 @@ const SimilarPostsSchema = z.object({
     .min(1, "Title parameter is required for fetching similar posts"),
 });
 
-export async function loader({ request, context }: Route.LoaderArgs) {
+export async function loader({ context, url }: Route.LoaderArgs) {
   const api = context.get(apiClientContext) as ApiClient;
 
-  const url = new URL(request.url);
   const rawTitle = url.searchParams.get("title") || "";
 
   const result = SimilarPostsSchema.safeParse({ title: rawTitle });

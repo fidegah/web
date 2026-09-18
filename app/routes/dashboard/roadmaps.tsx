@@ -30,11 +30,10 @@ export function meta() {
   return [{ title: SEO_CONFIG.dashboard.roadmap.list.title }];
 }
 
-export async function loader({ request, params, context }: Route.LoaderArgs) {
+export async function loader({ params, context, url }: Route.LoaderArgs) {
   const api = context.get(apiClientContext);
   const { roadmapId } = params;
 
-  const url = new URL(request.url);
   const searchParam = url.searchParams.get("search") || "";
   const postStatusIdParam = url.searchParams.get("postStatusId") || "";
   const postsPageParam = url.searchParams.get("postsPage") || "1";
