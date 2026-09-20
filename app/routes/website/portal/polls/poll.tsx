@@ -8,7 +8,7 @@ import PortalDialog from "~/components/website/portal/dialog";
 import PortalPollInfo from "~/components/website/portal/poll/info";
 import PollOption from "~/components/website/portal/poll/option";
 import { useDevice } from "~/hooks/use-device";
-import { SEO_CONFIG } from "~/constants/seo";
+import { getCanonicalUrl, SEO_CONFIG } from "~/constants/seo";
 import { ERROR_CODE } from "~/constants/errors";
 import type { Route } from "./+types/poll";
 import { useActionAlert } from "~/hooks/use-action-alert";
@@ -53,15 +53,17 @@ export async function loader({ request, params, context }: Route.LoaderArgs) {
   }
 }
 
-export function meta({ loaderData }: Route.MetaArgs) {
+export function meta({ loaderData, location }: Route.MetaArgs) {
   const { workspace, poll } = loaderData;
   const seo = SEO_CONFIG.portal.pollDetail(workspace.name, poll.title);
+  const canonicalUrl = getCanonicalUrl(location.pathname);
 
   return [
     { title: seo.title },
     { name: "description", content: seo.description },
     { property: "og:title", content: seo.title },
     { property: "og:description", content: seo.description },
+    { tagName: "link", rel: "canonical", href: canonicalUrl },
   ];
 }
 

@@ -1,3 +1,9 @@
+export const getCanonicalUrl = (pathname: string): string => {
+  const DOMAIN = import.meta.env.VITE_APP_DOMAIN;
+  const cleanPath = pathname.startsWith("/") ? pathname : `/${pathname}`;
+  return `${DOMAIN}${cleanPath}`;
+};
+
 export const SEO_CONFIG = {
   onboarding: {
     title: "راه‌اندازی اولیه فضای کاری | فیدگاه",
@@ -11,60 +17,6 @@ export const SEO_CONFIG = {
     description:
       "فضای کاری مد نظر خود را برای ورود به داشبورد مدیریت فیدگاه انتخاب کنید.",
     robots: "noindex, nofollow",
-  },
-
-  sdk: {
-    feedbackWidget: {
-      title: "ویجت بازخورد | فیدگاه",
-      description:
-        "صندوق دریافت و مدیریت بازخوردهای کاربران از طریق SDK فیدگاه.",
-      robots: "noindex, nofollow",
-    },
-    postWidget: {
-      title: "جزئیات بازخورد | ویجت فیدگاه",
-      description:
-        "مشاهده جزئیات پست، لایک‌ها و ثبت دیدگاه در ویجت SDK فیدگاه.",
-      robots: "noindex, nofollow",
-    },
-  },
-
-  portal: {
-    home: (name: string) => ({
-      title: `${name} | بازخورد و پیشنهادات`,
-      description: `به پورتال بازخورد ${name} خوش آمدید. نظرات و پیشنهادات خود را با ما در میان بگذارید.`,
-    }),
-
-    changelogs: (name: string) => ({
-      title: `آخرین تغییرات و اطلاعیه‌ها | ${name}`,
-      description: `از آخرین ویژگی‌ها، بهبودها و رفع باگ‌های ${name} مطلع شوید.`,
-    }),
-
-    singleChangelog: (workspaceName: string, changelogTitle: string) => ({
-      title: `${changelogTitle} | ${workspaceName}`,
-      description: `جزئیات آخرین تغییرات و آپدیت‌های ${workspaceName}. موضوع: ${changelogTitle}`,
-    }),
-
-    postDetail: (
-      workspaceName: string,
-      postTitle: string,
-      categoryName?: string,
-    ) => ({
-      title: `${postTitle} | ${workspaceName}`,
-      description: `جزئیات بازخورد درباره «${postTitle}» ${
-        categoryName ? `در دسته ${categoryName}` : ""
-      } در ${workspaceName}`,
-      robots: "noindex, nofollow",
-    }),
-
-    pollsList: (workspaceName: string) => ({
-      title: `نظرسنجی‌ها | ${workspaceName}`,
-      description: `در نظرسنجی‌های ${workspaceName} شرکت کنید و نظرات خود را با ما در میان بگذارید. لیست تمام نظرسنجی‌های فعال و گذشته.`,
-    }),
-
-    pollDetail: (workspaceName: string, pollTitle: string) => ({
-      title: `${pollTitle} | نظرسنجی | ${workspaceName}`,
-      description: `در نظرسنجی «${pollTitle}» شرکت کنید و نظر خود را برای بهبود ${workspaceName} ثبت کنید.`,
-    }),
   },
 
   dashboard: {
@@ -142,6 +94,60 @@ export const SEO_CONFIG = {
         title: "مدیریت تگ‌ها | فیدگاه",
       },
     },
+  },
+
+  sdk: {
+    feedbackWidget: {
+      title: "ویجت بازخورد | فیدگاه",
+      description:
+        "صندوق دریافت و مدیریت بازخوردهای کاربران از طریق SDK فیدگاه.",
+      robots: "noindex, nofollow",
+    },
+    postWidget: {
+      title: "جزئیات بازخورد | ویجت فیدگاه",
+      description:
+        "مشاهده جزئیات پست، لایک‌ها و ثبت دیدگاه در ویجت SDK فیدگاه.",
+      robots: "noindex, nofollow",
+    },
+  },
+
+  portal: {
+    home: (name: string) => ({
+      title: `${name} | بازخورد و پیشنهادات`,
+      description: `به پورتال بازخورد ${name} خوش آمدید. نظرات و پیشنهادات خود را با ما در میان بگذارید.`,
+    }),
+
+    changelogs: (name: string) => ({
+      title: `آخرین تغییرات و اطلاعیه‌ها | ${name}`,
+      description: `از آخرین ویژگی‌ها، بهبودها و رفع باگ‌های ${name} مطلع شوید.`,
+    }),
+
+    singleChangelog: (workspaceName: string, changelogTitle: string) => ({
+      title: `${changelogTitle} | ${workspaceName}`,
+      description: `جزئیات آخرین تغییرات و آپدیت‌های ${workspaceName}. موضوع: ${changelogTitle}`,
+    }),
+
+    postDetail: (
+      workspaceName: string,
+      postTitle: string,
+      categoryName?: string,
+    ) => ({
+      title: `${postTitle} | ${workspaceName}`,
+      description: `جزئیات بازخورد درباره «${postTitle}» ${
+        categoryName ? `در دسته ${categoryName}` : ""
+      } در ${workspaceName}`,
+      robots: "noindex, nofollow",
+    }),
+
+    pollsList: (workspaceName: string) => ({
+      title: `نظرسنجی‌ها | ${workspaceName}`,
+      description: `در نظرسنجی‌های ${workspaceName} شرکت کنید و نظرات خود را با ما در میان بگذارید. لیست تمام نظرسنجی‌های فعال و گذشته.`,
+    }),
+
+    pollDetail: (workspaceName: string, pollTitle: string) => ({
+      title: `${pollTitle} | نظرسنجی | ${workspaceName}`,
+      description: `در نظرسنجی «${pollTitle}» شرکت کنید و نظر خود را برای بهبود ${workspaceName} ثبت کنید.`,
+    }),
   },
 
   publicPage: {

@@ -1,7 +1,7 @@
 import { useActionAlert } from "~/hooks/use-action-alert";
 import { data, replace, useNavigate } from "react-router";
 import { ERROR_CODE } from "~/constants/errors";
-import { SEO_CONFIG } from "~/constants/seo";
+import { getCanonicalUrl, SEO_CONFIG } from "~/constants/seo";
 import type { Route } from "./+types";
 import PortalFeedbackLayout from "~/components/website/portal/layouts";
 import { apiClientContext } from "~/context";
@@ -13,10 +13,11 @@ import {
   getPortalPosts,
 } from "~/services/portal.service";
 
-export function meta({ loaderData }: Route.MetaArgs) {
+export function meta({ loaderData, location }: Route.MetaArgs) {
   const { workspace, board } = loaderData;
   const workspaceName = workspace.name;
   const boardTitle = board?.id;
+  const canonicalUrl = getCanonicalUrl(location.pathname);
 
   const title = boardTitle
     ? `${board.title} | ${workspaceName}`
@@ -31,6 +32,7 @@ export function meta({ loaderData }: Route.MetaArgs) {
     { name: "description", content: description },
     { property: "og:title", content: title },
     { property: "og:description", content: description },
+    { tagName: "link", rel: "canonical", href: canonicalUrl },
   ];
 }
 

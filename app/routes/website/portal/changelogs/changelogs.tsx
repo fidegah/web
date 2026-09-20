@@ -8,7 +8,7 @@ import { MESSAGES } from "~/constants/messages";
 import { cn } from "~/lib/utils";
 import { data, useNavigate } from "react-router";
 import { ERROR_CODE } from "~/constants/errors";
-import { SEO_CONFIG } from "~/constants/seo";
+import { getCanonicalUrl, SEO_CONFIG } from "~/constants/seo";
 import FilterDialog from "~/components/dashboard/filters/filter-dialog";
 import FilterSection from "~/components/dashboard/filters/ filter-section";
 import { CustomPagination } from "~/components/ui/custom-pagination";
@@ -60,13 +60,15 @@ export async function loader({ request, context, url }: Route.LoaderArgs) {
   }
 }
 
-export function meta({ loaderData }: Route.MetaArgs) {
+export function meta({ loaderData, location }: Route.MetaArgs) {
   const { workspace } = loaderData;
+  const canonicalUrl = getCanonicalUrl(location.pathname);
 
   const config = SEO_CONFIG.portal.changelogs(workspace.name);
   return [
     { title: config.title },
     { name: "description", content: config.description },
+    { tagName: "link", rel: "canonical", href: canonicalUrl },
   ];
 }
 

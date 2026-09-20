@@ -1,16 +1,20 @@
 import { Shield } from "lucide-react";
 import BasePublicPageLayout from "~/components/website/public/base-layout";
 import { PRIVACY_SECTIONS } from "~/constants/public-page/privacy";
-import { SEO_CONFIG } from "~/constants/seo";
+import { getCanonicalUrl, SEO_CONFIG } from "~/constants/seo";
+import type { Route } from "./+types/privacy";
 
-export function meta() {
+export function meta({ location }: Route.MetaArgs) {
   const config = SEO_CONFIG.publicPage.privacy;
   const { title, description, ogTitle } = config;
+  const canonicalUrl = getCanonicalUrl(location.pathname);
+
   return [
     { title },
     { name: "description", content: description },
     { property: "og:title", content: ogTitle },
     { property: "og:type", content: "website" },
+    { tagName: "link", rel: "canonical", href: canonicalUrl },
   ];
 }
 

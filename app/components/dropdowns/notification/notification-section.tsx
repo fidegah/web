@@ -77,14 +77,14 @@ export const NotificationSection = ({
 
           <div className="flex-1 min-w-0 flex flex-col text-right items-stretch">
             <div className="w-full flex items-center justify-between gap-2">
-              <h4
+              <p
                 className={cn(
                   "font-medium line-clamp-1 text-foreground text-right",
                   !isRead && "font-semibold text-blue-900 dark:text-blue-300",
                 )}
               >
                 {notification.title}
-              </h4>
+              </p>
 
               {!isRead && (
                 <span className="size-1.5 rounded-full bg-blue-600 dark:bg-blue-500 shrink-0" />

@@ -2,7 +2,10 @@ import { Mail, Send } from "lucide-react";
 import { Link } from "react-router";
 
 const socialLinks = [
-  { icon: <Mail className="size-4" />, href: "narimanfallahi.ir@gmail.com" },
+  {
+    icon: <Mail className="size-4" />,
+    href: "mailto:contact@fidegah.ir",
+  },
   { icon: <Send className="size-4" />, href: "https://t.me/narimanfallahi" },
 ];
 
@@ -14,7 +17,7 @@ const footerLinks = [
       { name: "تور", href: "/product-tour" },
       {
         name: "مستندات",
-        href: `https://doc.${import.meta.env.VITE_APP_DOMAIN}`,
+        href: `https://docs.${import.meta.env.VITE_APP_DOMAIN}`,
       },
     ],
   },
@@ -57,9 +60,9 @@ export default function PublicFooterMenu() {
         <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:w-2/3 lg:gap-12">
           {footerLinks.map((section) => (
             <div key={section.title} className="flex flex-col gap-4">
-              <h4 className="text-sm font-semibold tracking-wider text-zinc-900 dark:text-zinc-200 uppercase">
+              <p className="text-sm font-semibold tracking-wider text-zinc-900 dark:text-zinc-200 uppercase">
                 {section.title}
-              </h4>
+              </p>
               <ul className="flex flex-col gap-3 text-sm text-zinc-500 dark:text-zinc-400">
                 {section.links.map((link) => (
                   <li key={link.name}>

@@ -22,13 +22,13 @@ export default function CreateRoadmapDialog({
   open,
   onOpenChange,
 }: Readonly<CreateRoadmapDialogProps>) {
-  const fetcher = useFetcher<CreateResponse<Roadmap>>();
+  const fetcher = useFetcher<CreateResponse>();
 
   useEffect(() => {
     if (fetcher.state !== "idle" && fetcher.data?.status === "OK") {
       onOpenChange(false);
     }
-  }, [fetcher.state, onOpenChange]);
+  }, [fetcher.state, fetcher.data, onOpenChange]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

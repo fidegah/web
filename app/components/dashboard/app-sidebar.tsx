@@ -124,7 +124,7 @@ export function AppSidebar({ user, workspaces }: Readonly<AppSidebarProps>) {
           <div className="flex items-center w-full justify-center pt-2 pb-2 border-b border-gray-200 dark:border-gray-700">
             <div className="flex flex-col items-center justify-center gap-0.5 pb-2 overflow-hidden -m-2">
               <img
-                src="/logo/fidegah_logo_text.webp"
+                src="/logos/fidegah_logo_text.webp"
                 alt="FideGah Logo"
                 className="w-auto h-8 object-contain"
               />

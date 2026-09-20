@@ -28,6 +28,11 @@ export const links: Route.LinksFunction = () => [
     rel: "stylesheet",
     href: "https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap",
   },
+  {
+    rel: "icon",
+    href: "/favicon.ico",
+    type: "image/x-icon",
+  },
 ];
 
 export function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
@@ -46,6 +51,7 @@ export function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
           media="(prefers-color-scheme: dark)"
           content="#0f172a"
         />
+        <meta name="robots" content="index, follow" />
         <Meta />
         <Links />
         <script

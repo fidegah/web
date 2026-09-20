@@ -22,7 +22,7 @@ export default function ErrorComponent({
     <div className="flex flex-col h-screen md:justify-center overflow-y-auto scrollbar-thin">
       <div className="w-full ltr md:absolute md:top-0 p-4">
         <img
-          src="/logo/fidegah_logo_complete.webp"
+          src="/logos/fidegah_logo_complete.webp"
           alt="Fidegah Logo"
           className="w-20 lg:w-25"
         />

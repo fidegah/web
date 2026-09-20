@@ -34,7 +34,7 @@ export default function AuthLayout() {
     <div className="w-full h-screen overflow-y-hidden flex justify-center items-center">
       <div className="absolute top-0 left-0 p-6">
         <img
-          src="/logo/fidegah_logo_text.webp"
+          src="/logos/fidegah_logo_text.webp"
           alt="Fidegah Logo"
           className="w-auto h-8 md:h-10"
         />

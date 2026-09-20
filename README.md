@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="public/logo/fidegah_logo_text.webp" alt="Fidegah Logo" height="60" />
+<img src="public/logos/fidegah_logo_text.webp" alt="Fidegah Logo" height="60" />
 
 # فیدگاه (Fidegah) 🚀
 

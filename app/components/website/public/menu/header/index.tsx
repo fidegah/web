@@ -47,7 +47,7 @@ export default function PublicHeaderMenu() {
 
           <Link to="/" className="transition-transform active:scale-95">
             <img
-              src="/logo/fidegah_logo_text.webp"
+              src="/logos/fidegah_logo_text.webp"
               alt="Fidegah Logo"
               className="w-13"
             />
@@ -116,7 +116,7 @@ export default function PublicHeaderMenu() {
               className="flex items-center gap-2 transition-transform active:scale-95"
             >
               <img
-                src="/logo/fidegah_logo_text.webp"
+                src="/logos/fidegah_logo_text.webp"
                 alt="Fidegah Logo"
                 className="w-16 object-contain"
               />

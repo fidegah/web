@@ -1,19 +1,23 @@
-import { Target, Sparkles, KanbanSquare } from "lucide-react";
+import { Target, Sparkles } from "lucide-react";
 import { Link } from "react-router";
 import { Button } from "~/components/ui/button";
 import BasePublicPageLayout from "~/components/website/public/base-layout";
 import { TourStepRow } from "~/components/website/public/tour-step";
 import { PRODUCT_TOUR_STEPS } from "~/constants/public-page/product-tour";
-import { SEO_CONFIG } from "~/constants/seo";
+import { getCanonicalUrl, SEO_CONFIG } from "~/constants/seo";
+import type { Route } from "./+types/product-tour";
 
-export function meta() {
+export function meta({ location }: Route.MetaArgs) {
   const config = SEO_CONFIG.publicPage.productTour;
   const { title, description, ogTitle } = config;
+  const canonicalUrl = getCanonicalUrl(location.pathname);
+
   return [
     { title },
     { name: "description", content: description },
     { property: "og:title", content: ogTitle },
     { property: "og:type", content: "website" },
+    { tagName: "link", rel: "canonical", href: canonicalUrl },
   ];
 }
 

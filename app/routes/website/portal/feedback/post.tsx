@@ -1,6 +1,6 @@
 import type { Route } from "./+types/post";
 import { data } from "react-router";
-import { SEO_CONFIG } from "~/constants/seo";
+import { getCanonicalUrl, SEO_CONFIG } from "~/constants/seo";
 import { ERROR_CODE } from "~/constants/errors";
 import PortalFeedbackPostLayout from "~/components/website/portal/layouts/post";
 import { getCurrentUser } from "~/services/user.service";
@@ -16,8 +16,9 @@ import {
 } from "~/services/portal.service";
 import { useOtpAuthDialog } from "~/contexts/otp-auth-dialog-context";
 
-export function meta({ loaderData }: Route.MetaArgs) {
+export function meta({ loaderData, location }: Route.MetaArgs) {
   const { workspace, post, postCategory } = loaderData;
+  const canonicalUrl = getCanonicalUrl(location.pathname);
 
   const config = SEO_CONFIG.portal.postDetail(
     workspace.name,
@@ -31,6 +32,7 @@ export function meta({ loaderData }: Route.MetaArgs) {
     { property: "og:title", content: config.title },
     { property: "og:description", content: config.description },
     { name: "robots", content: config.robots },
+    { tagName: "link", rel: "canonical", href: canonicalUrl },
   ];
 }
 

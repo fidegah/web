@@ -6,7 +6,7 @@ import { data } from "react-router";
 import { ERROR_CODE } from "~/constants/errors";
 import { Activity } from "react";
 import { DataEmptyState } from "~/components/ui/empty-state";
-import { SEO_CONFIG } from "~/constants/seo";
+import { getCanonicalUrl, SEO_CONFIG } from "~/constants/seo";
 import {
   getPortalPosts,
   getPortalPostStatuses,
@@ -75,8 +75,9 @@ export async function loader({ context, url }: Route.LoaderArgs) {
   }
 }
 
-export function meta({ loaderData }: Route.MetaArgs) {
+export function meta({ loaderData, location }: Route.MetaArgs) {
   const { workspace, isSubdomainExist } = loaderData;
+  const canonicalUrl = getCanonicalUrl(location.pathname);
 
   if (isSubdomainExist) {
     const config = SEO_CONFIG.portal.home(workspace?.name || "");
@@ -84,6 +85,8 @@ export function meta({ loaderData }: Route.MetaArgs) {
       { title: config.title },
       { name: "description", content: config.description },
       { property: "og:title", content: config.title },
+      { property: "og:url", content: canonicalUrl },
+      { tagName: "link", rel: "canonical", href: canonicalUrl },
     ];
   }
 
@@ -91,6 +94,8 @@ export function meta({ loaderData }: Route.MetaArgs) {
     { title: SEO_CONFIG.publicPage.home.title },
     { name: "description", content: SEO_CONFIG.publicPage.home.description },
     { property: "og:title", content: SEO_CONFIG.publicPage.home.ogTitle },
+    { property: "og:url", content: canonicalUrl },
+    { tagName: "link", rel: "canonical", href: canonicalUrl },
   ];
 }
 

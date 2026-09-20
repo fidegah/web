@@ -12,7 +12,7 @@ export default function MobileMenu() {
         </div>
 
         <img
-          src="/logo/fidegah_logo_text.webp"
+          src="/logos/fidegah_logo_text.webp"
           alt="FideGah Logo"
           className="h-6 w-auto object-contain select-none dark:brightness-110"
         />

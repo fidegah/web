@@ -1,7 +1,7 @@
 import type { Route } from "./+types/polls";
 import { data } from "react-router";
 import { ERROR_CODE } from "~/constants/errors";
-import { SEO_CONFIG } from "~/constants/seo";
+import { getCanonicalUrl, SEO_CONFIG } from "~/constants/seo";
 import PollsListPage from "~/components/polls-list-page";
 import { apiClientContext } from "~/context";
 import {
@@ -38,16 +38,17 @@ export async function loader({ context, url }: Route.LoaderArgs) {
   }
 }
 
-export function meta({ loaderData }: Route.MetaArgs) {
+export function meta({ loaderData, location }: Route.MetaArgs) {
   const { workspace } = loaderData;
-
   const seo = SEO_CONFIG.portal.pollsList(workspace.name);
+  const canonicalUrl = getCanonicalUrl(location.pathname);
 
   return [
     { title: seo.title },
     { name: "description", content: seo.description },
     { property: "og:title", content: seo.title },
     { property: "og:description", content: seo.description },
+    { tagName: "link", rel: "canonical", href: canonicalUrl },
   ];
 }
 

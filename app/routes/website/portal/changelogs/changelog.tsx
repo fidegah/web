@@ -3,7 +3,7 @@ import { useState } from "react";
 import PortalDialog from "~/components/website/portal/dialog";
 import PortalChangelogInfo from "~/components/website/portal/changelog-info";
 import type { Changelog } from "~/types";
-import { SEO_CONFIG } from "~/constants/seo";
+import { getCanonicalUrl, SEO_CONFIG } from "~/constants/seo";
 import { data } from "react-router";
 import { ERROR_CODE } from "~/constants/errors";
 import ChangelogBadge from "~/components/ui/changelog-badge";
@@ -39,8 +39,9 @@ export async function loader({ request, params, context }: Route.LoaderArgs) {
   }
 }
 
-export function meta({ loaderData }: Route.MetaArgs) {
+export function meta({ loaderData, location }: Route.MetaArgs) {
   const { changelog, workspace } = loaderData;
+  const canonicalUrl = getCanonicalUrl(location.pathname);
 
   const config = SEO_CONFIG.portal.singleChangelog(
     workspace.name,
@@ -52,6 +53,7 @@ export function meta({ loaderData }: Route.MetaArgs) {
     { property: "og:title", content: config.title },
     { property: "og:description", content: config.description },
     { property: "og:type", content: "article" },
+    { tagName: "link", rel: "canonical", href: canonicalUrl },
   ];
 }
 

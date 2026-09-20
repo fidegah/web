@@ -57,7 +57,7 @@ export default function PopularItems({ data }: Readonly<PopularItemsProps>) {
         },
         {
           icon: <MessageCircle className="size-4 text-blue-500" />,
-          label: "نظر",
+          label: "دیدگاه",
           value: post.commentsCount,
         },
       ],

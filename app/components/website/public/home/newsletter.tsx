@@ -41,6 +41,9 @@ export default function Newsletter() {
               className="mt-6 relative z-10"
             >
               <div className="flex gap-2.5 items-center justify-center max-w-md mx-auto">
+                <label htmlFor="email" className="sr-only">
+                  آدرس ایمیل
+                </label>
                 <Input
                   type="email"
                   name="email"

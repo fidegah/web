@@ -4,7 +4,7 @@ import { MessageSquare } from "lucide-react";
 import ContactForm from "~/components/website/public/contact-form";
 import { MESSAGES } from "~/constants/messages";
 import { CONTACT_PAGE_CONTENT } from "~/constants/public-page/contact";
-import { SEO_CONFIG } from "~/constants/seo";
+import { getCanonicalUrl, SEO_CONFIG } from "~/constants/seo";
 import { useActionAlert } from "~/hooks/use-action-alert";
 import { createResponse } from "~/lib/create-response";
 import { getZodErrorMessages } from "~/lib/utils";
@@ -12,14 +12,17 @@ import { contactSchema } from "~/schemas/website/public-page/contact";
 import { createContact } from "~/services/contact.service";
 import { apiClientContext } from "~/context";
 
-export function meta() {
+export function meta({ location }: Route.MetaArgs) {
   const config = SEO_CONFIG.publicPage.contact;
   const { title, description, ogTitle } = config;
+  const canonicalUrl = getCanonicalUrl(location.pathname);
+
   return [
     { title },
     { name: "description", content: description },
     { property: "og:title", content: ogTitle },
     { property: "og:type", content: "website" },
+    { tagName: "link", rel: "canonical", href: canonicalUrl },
   ];
 }
 

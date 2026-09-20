@@ -117,9 +117,9 @@ export default function StepPreview({
               </svg>
             </div>
             <div className="space-y-1">
-              <h4 className="text-xs font-bold text-zinc-900 dark:text-white">
+              <p className="text-xs font-bold text-zinc-900 dark:text-white">
                 ویژگی درخواستی شما منتشر شد!
-              </h4>
+              </p>
               <p className="text-[11px] text-zinc-500 dark:text-zinc-400 leading-relaxed">
                 پیشنهاد شما مبنی بر «بهبود فیلترهای جستجو» با موفقیت پیاده‌سازی
                 شد.

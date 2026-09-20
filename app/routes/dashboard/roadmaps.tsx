@@ -204,7 +204,9 @@ export default function Roadmap({ loaderData, params }: Route.ComponentProps) {
       actionText: currentRoadmap ? "افزودن پست به نقشه‌راه" : "ایجاد نقشه‌راه",
       actionIcon: CircleFadingPlus,
       onActionClick: () => {
-        setIsOpenAddPostSheet(true);
+        currentRoadmap
+          ? setIsOpenAddPostSheet(true)
+          : setIsOpenCreateRoamapDialog(true);
       },
     };
   };
